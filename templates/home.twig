@@ -10,10 +10,15 @@
     This web application will allow them to be members, explore photos posted by other photographers and picture editors,
     view resources that they can use to improve their work and contribute to the knowledge sharing within the community
     through blogs.</p>
+    {% if user.id %}
+    <br>
+    <p class="lead">Welcome back {{user.email}}</p>
+    {% else %}
     <p>
       <a href="/sign-up" class="btn btn-primary my-2">Sign up</a>
       <a href="/sign-in" class="btn btn-secondary my-2">Sign in</a>
     </p>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

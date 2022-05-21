@@ -12,6 +12,9 @@ class User
   private int $id;
   private string $email;
   private string $password;
+  private string $username;
+  private string $phone;
+  private string $picture;
   private Datetime $createdAt;
   private Datetime $updatedAt;
 
@@ -50,5 +53,20 @@ class User
   public function updatedAt()
   {
     return $this->updatedAt;
+  }
+
+  public function username()
+  {
+    return $this->username;
+  }
+
+  public function phone()
+  {
+    return $this->phone;
+  }
+
+  public function picture()
+  {
+    return $this->picture;
   }
 }

@@ -60,4 +60,56 @@ final class MySQLUserRepository implements UserRepository
         }
         return null;
     }
+
+    public function getUserById(int $id)
+    {
+        $query = <<<'QUERY'
+        SELECT * FROM users WHERE id = :id
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        $statement->bindParam('id', $id, PDO::PARAM_STR);
+
+        $statement->execute();
+
+        $count = $statement->rowCount();
+        if ($count > 0) {
+            $row = $statement->fetch(PDO::FETCH_OBJ);
+            return $row;
+        }
+        return null;
+    }
+
+    public function updateProfile(int $id, string $username, string $phone, string $picture){
+      $query = <<<'QUERY'
+      UPDATE users
+      SET username = :username, phone = :phone, profile_picture = :picture
+      WHERE id = :id
+      QUERY;
+
+      $statement = $this->databaseConnection->prepare($query);
+
+      $statement->bindParam('username', $username, PDO::PARAM_STR);
+      $statement->bindParam('phone', $phone, PDO::PARAM_STR);
+      $statement->bindParam('picture', $picture, PDO::PARAM_STR);
+      $statement->bindParam('id', $id, PDO::PARAM_STR);
+
+      $statement->execute();
+    }
+
+    public function updatePassword(int $id, string $password){
+      $query = <<<'QUERY'
+      UPDATE users
+      SET password = :password
+      WHERE id = :id
+      QUERY;
+
+      $statement = $this->databaseConnection->prepare($query);
+
+      $statement->bindParam('password', $password, PDO::PARAM_STR);
+      $statement->bindParam('id', $id, PDO::PARAM_STR);
+
+      $statement->execute();
+    }
 }

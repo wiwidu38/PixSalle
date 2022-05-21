@@ -6,6 +6,8 @@ use Psr\Container\ContainerInterface;
 use Salle\PixSalle\Controller\SignUpController;
 use Salle\PixSalle\Controller\UserSessionController;
 use Salle\PixSalle\Controller\HomeController;
+use Salle\PixSalle\Controller\UserController;
+use Salle\PixSalle\Controller\ProfileController;
 use Salle\PixSalle\Repository\MySQLUserRepository;
 use Salle\PixSalle\Repository\PDOConnectionBuilder;
 use Slim\Views\Twig;
@@ -52,6 +54,20 @@ function addDependencies(ContainerInterface $container): void
         HomeController::class,
         function (ContainerInterface $c) {
             return new HomeController($c->get('view'), $c->get('user_repository'));
+        }
+    );
+
+    $container->set(
+        ProfileController::class,
+        function (ContainerInterface $c) {
+            return new ProfileController($c->get('view'), $c->get('user_repository'));
+        }
+    );
+
+    $container->set(
+        UserController::class,
+        function (ContainerInterface $c) {
+            return new UserController($c->get('view'), $c->get('user_repository'));
         }
     );
 }

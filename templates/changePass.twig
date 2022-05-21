@@ -1,0 +1,46 @@
+{% extends "base.twig" %}
+
+{% block title %}Change Password | PixSalle{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 offset-lg-3">
+  <h1 class="display-3 my-4">Change Password</h1>
+  {% if info %}
+      <div class="alert alert-success" role="alert">
+        {{info}}
+      </div>
+  {% endif %}
+  <form class="row justify-content-center" action="/profile/changePassword" method="POST">
+    <div class="form-group">
+      <label for="old">Old password</label>
+      <input class="form-control" id="old" name="old_password" type="password">
+    </div>
+    {% if formErrors.old %}
+        <div class="alert alert-warning" role="alert">
+          {{formErrors.old}}
+        </div>
+    {% endif %}
+    <div class="form-group">
+      <label for="new">New password</label>
+      <input class="form-control" id="new" name="new_password" type="password">
+    </div>
+    {% if formErrors.new %}
+        <div class="alert alert-warning" role="alert">
+          {{formErrors.new}}
+        </div>
+    {% endif %}
+    <div class="form-group">
+      <label for="confirm">Confirm new password</label>
+      <input class="form-control" id="confirm" name="confirm_password" type="password">
+    </div>
+    {% if formErrors.confirm %}
+        <div class="alert alert-warning" role="alert">
+          {{formErrors.confirm}}
+        </div>
+    {% endif %}
+    <span class="input-group-btn">
+      <button type="submit" class="m-4 btn btn-primary">Submit</button>
+      <a href="/profile" class="m-4 btn btn-secondary">Back</a>
+    </span>
+  </form>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.twig" %}
+
+{% block title %}Profile | PixSalle{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 offset-lg-3">
+  <h1 class="display-3 my-4">My Profile</h1>
+  {% if info %}
+      <div class="alert alert-success" role="alert">
+        {{info}}
+      </div>
+  {% endif %}
+  {% if formErrors %}
+    {% for message in formErrors %}
+      <div class="alert alert-warning" role="alert">
+        {{message}}
+      </div>
+    {% endfor %}
+  {% endif %}
+  <form class="row justify-content-center" action="/profile" method="POST">
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input class="form-control" id="email" name="email" aria-describedby="emailHelp" type="email" value="{{user.email}}" disabled>
+      <small id="emailHelp" class="form-text text-muted">Email cannot be modified.</small>
+    </div>
+    <div class="form-group">
+      <label for="username">Username</label>
+      {% if user.username %}
+        <input class="form-control" id="username" name="username" type="text" value="{{user.username}}">
+      {% else %}
+      <input class="form-control" id="username" name="username" type="text" value="user{{user.id}}">
+      {% endif %}
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone number</label>
+      <input class="form-control" id="phone" name="phone" aria-describedby="phoneHelp" type="text" value="{{user.phone}}">
+      <small id="phoneHelp" class="form-text text-muted">You must use this format: 6XXXXXXXX.</small>
+    </div>
+    <div class="form-group">
+      <label for="profilePicture">Profile picture</label>
+      <input class="form-control" id="profilePicture" name="profile_picture" type="file">
+    </div>
+    <span class="input-group-btn">
+      <button type="submit" class="m-4 btn btn-primary">Submit</button>
+      <a href="/profile/changePassword" class="m-4 btn btn-secondary">Change Password</a>
+    </span>
+  </form>
+{% endblock %}

@@ -10,4 +10,7 @@ interface UserRepository
 {
     public function createUser(User $user): void;
     public function getUserByEmail(string $email);
+    public function getUserById(int $id);
+    public function updateProfile(int $id, string $username, string $phone, string $picture);
+    public function updatePassword(int $id, string $password);
 }
