@@ -63,7 +63,7 @@ final class SignUpController
         if ($errors['password'] == '') {
             unset($errors['password']);
         }
-        
+
         $savedUser = $this->userRepository->getUserByEmail($data['email']);
         if ($savedUser != null) {
             $errors['email'] = "User already exists!";

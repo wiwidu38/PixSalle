@@ -49,32 +49,27 @@ class UserController
 
         $errors = [];
 
-        $errors['username'] = $this->validator->validateUsername($data['username']);
-        $errors['phone'] = $this->validator->validatePhone($data['phone']);
+        $errors['amount'] = $this->validator->validateAmount(floatval($data['amount']));
 
-        if ($errors['phone'] == '') {
-            unset($errors['phone']);
-        }
-
-        if ($errors['username'] == '') {
-            unset($errors['username']);
+        if ($errors['amount'] == '') {
+            unset($errors['amount']);
         }
 
         if (count($errors) == 0) {
-            $this->userRepository->updateProfile(intval($_SESSION['user_id']), $data['username'], $data['phone'], '');
+            $this->userRepository->addAmount(intval($_SESSION['user_id']),$data['amount']);
             $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
             return $this->twig->render(
                 $response,
-                'profile.twig',
+                'wallet.twig',
                 [
-                    'info' => 'Informations was updated successfully',
+                    'info' => 'Amount is successfully added to your wallet',
                     'user' => $user
                 ]
             );
         }
         return $this->twig->render(
             $response,
-            'profile.twig',
+            'wallet.twig',
             [
                 'formErrors' => $errors,
                 'user' => $user

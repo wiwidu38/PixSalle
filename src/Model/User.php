@@ -15,6 +15,7 @@ class User
   private string $username;
   private string $phone;
   private string $picture;
+  private float $amount;
   private Datetime $createdAt;
   private Datetime $updatedAt;
 
@@ -28,6 +29,7 @@ class User
     $this->password = $password;
     $this->createdAt = $createdAt;
     $this->updatedAt = $updatedAt;
+    $this->amount = 30.0;
   }
 
   public function id()
@@ -68,5 +70,10 @@ class User
   public function picture()
   {
     return $this->picture;
+  }
+
+  public function amount()
+  {
+    return $this->amount;
   }
 }

@@ -22,14 +22,15 @@ final class MySQLUserRepository implements UserRepository
     public function createUser(User $user): void
     {
         $query = <<<'QUERY'
-        INSERT INTO users(email, password, createdAt, updatedAt)
-        VALUES(:email, :password, :createdAt, :updatedAt)
+        INSERT INTO users(email, password, createdAt, updatedAt, amount, username, phone, profile_picture)
+        VALUES(:email, :password, :createdAt, :updatedAt, :amount, '', '', '')
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
 
         $email = $user->email();
         $password = $user->password();
+        $amount = $user->amount();
         $createdAt = $user->createdAt()->format(self::DATE_FORMAT);
         $updatedAt = $user->updatedAt()->format(self::DATE_FORMAT);
 
@@ -37,6 +38,7 @@ final class MySQLUserRepository implements UserRepository
         $statement->bindParam('password', $password, PDO::PARAM_STR);
         $statement->bindParam('createdAt', $createdAt, PDO::PARAM_STR);
         $statement->bindParam('updatedAt', $updatedAt, PDO::PARAM_STR);
+        $statement->bindParam('amount', $amount, PDO::PARAM_STR);
 
         $statement->execute();
     }
@@ -108,6 +110,21 @@ final class MySQLUserRepository implements UserRepository
       $statement = $this->databaseConnection->prepare($query);
 
       $statement->bindParam('password', $password, PDO::PARAM_STR);
+      $statement->bindParam('id', $id, PDO::PARAM_STR);
+
+      $statement->execute();
+    }
+
+    public function addAmount(int $id, string $amount){
+      $query = <<<'QUERY'
+      UPDATE users
+      SET amount = amount + :amount
+      WHERE id = :id
+      QUERY;
+
+      $statement = $this->databaseConnection->prepare($query);
+
+      $statement->bindParam('amount', $amount, PDO::PARAM_STR);
       $statement->bindParam('id', $id, PDO::PARAM_STR);
 
       $statement->execute();

@@ -68,4 +68,12 @@ class UserSessionController
             ]
         );
     }
+
+    public function logOut(Request $request, Response $response): Response
+    {
+        $data = $request->getParsedBody();
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        session_destroy();
+        return $response->withHeader('Location', '/')->withStatus(302);
+    }
 }

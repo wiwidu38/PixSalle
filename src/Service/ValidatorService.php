@@ -58,4 +58,10 @@ class ValidatorService
       return "Passwords doesn't match between us";
     return '';
   }
+
+  public function validateAmount(float $amount){
+    if($amount <= 0.0)
+      return "The amount recharge can't be inferior or equal to 0€";
+    return '';
+  }
 }

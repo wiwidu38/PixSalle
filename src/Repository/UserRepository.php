@@ -13,4 +13,5 @@ interface UserRepository
     public function getUserById(int $id);
     public function updateProfile(int $id, string $username, string $phone, string $picture);
     public function updatePassword(int $id, string $password);
+    public function addAmount(int $id, string $amount);
 }
