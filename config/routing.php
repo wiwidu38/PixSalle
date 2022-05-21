@@ -24,4 +24,6 @@ function addRoutes(App $app): void
     $app->post('/profile/changePassword', ProfileController::class . ':updatePassword');
     $app->get('/user/wallet', UserController::class . ':showWalletPage');
     $app->post('/user/wallet', UserController::class . ':addMoneyWallet');
+    $app->get('/user/membership', UserController::class . ':membershipPage');
+    $app->post('/user/membership', UserController::class . ':changePlan');
 }

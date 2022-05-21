@@ -1,0 +1,51 @@
+{% extends "base.twig" %}
+
+{% block title %}Membership | PixSalle{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 offset-lg-3">
+  <h1 class="display-3 my-4">Membership</h1>
+    <div class="d-flex justify-content-center align-items-center flex-column">
+      <p class="lead text-muted">Here you can choose your plan membership.</p>
+    </div>
+    {% if info %}
+        <div class="alert alert-success" role="alert">
+          {{info}}
+        </div>
+    {% endif %}
+  </div>
+      <form class="row row-cols-1 row-cols-md-3 mb-3 justify-content-center text-center" action="/user/membership" method="POST">
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm{% if user.membership == "cool" %} border-primary{% endif %}">
+            <div class="card-header py-3 {% if user.membership == "cool" %} text-white bg-primary border-primary{% endif %}">
+              <h4 class="my-0 fw-normal">Cool</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">Free</h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Limited functionnalities</li>
+                <li>Only view album</li>
+                <li>Access to Blog section</li>
+              </ul>
+              <button class="w-100 btn btn-lg {% if user.membership == "cool" %} btn-outline-primary{% else %} btn-primary{% endif %}" {% if user.membership != "cool" %}type="submit" name="cool" {% else %} disabled{% endif %}>{% if user.membership == cool %}Your plan{% else %}Join plan{% endif %}</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm{% if user.membership == "active" %} border-primary{% endif %}">
+            <div class="card-header py-3 {% if user.membership == "active" %} text-white bg-primary border-primary{% endif %}">
+              <h4 class="my-0 fw-normal">Active</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">2€<small class="text-muted fw-light">/album</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>All functionalities unlocked</li>
+                <li>Create album</li>
+                <li>All Blog access</li>
+              </ul>
+              <button class="w-100 btn btn-lg {% if user.membership == "active" %} btn-outline-primary{% else %} btn-primary{% endif %}"  {% if user.membership != "active" %}type="submit" name="active" {% else %} disabled{% endif %}>{% if user.membership == "active" %}Your plan{% else %}Join plan{% endif %}</button>
+            </div>
+          </div>
+        </div>
+      </form>
+{% endblock %}

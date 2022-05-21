@@ -14,4 +14,5 @@ interface UserRepository
     public function updateProfile(int $id, string $username, string $phone, string $picture);
     public function updatePassword(int $id, string $password);
     public function addAmount(int $id, string $amount);
+    public function changePlan(int $id, string $newPlan);
 }

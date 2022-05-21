@@ -82,4 +82,48 @@ class UserController
           ]);
       }
     }
+
+    public function membershipPage(Request $request, Response $response): Response {
+      $user = null;
+      if(array_key_exists('user_id',$_SESSION)){
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+        return $this->twig->render($response, 'membership.twig',
+          [
+            'user' => $user
+          ]);
+      }else{
+        return $this->twig->render($response, 'sign-in.twig',
+          [
+            'message' => 'You have to be login to access to this page'
+          ]);
+      }
+    }
+
+    public function changePlan(Request $request, Response $response): Response {
+      $user = null;
+      if(array_key_exists('user_id',$_SESSION)){
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+        $data = $request->getParsedBody();
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        $newPlan = '';
+        if(isset($data['cool']))
+          $newPlan = 'cool';
+        else $newPlan = 'active';
+        $this->userRepository->changePlan(intval($_SESSION['user_id']),$newPlan);
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+        return $this->twig->render(
+            $response,
+            'membership.twig',
+            [
+                'info' => 'Your plan has been updated',
+                'user' => $user
+            ]
+        );
+      }else{
+        return $this->twig->render($response, 'sign-in.twig',
+          [
+            'message' => 'You have to be login to access to this page'
+          ]);
+      }
+    }
 }

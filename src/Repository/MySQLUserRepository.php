@@ -22,7 +22,7 @@ final class MySQLUserRepository implements UserRepository
     public function createUser(User $user): void
     {
         $query = <<<'QUERY'
-        INSERT INTO users(email, password, createdAt, updatedAt, amount, username, phone, profile_picture)
+        INSERT INTO users(email, password, createdAt, updatedAt, amount, username, phone, profile_picture, membership)
         VALUES(:email, :password, :createdAt, :updatedAt, :amount, '', '', '')
         QUERY;
 
@@ -31,6 +31,7 @@ final class MySQLUserRepository implements UserRepository
         $email = $user->email();
         $password = $user->password();
         $amount = $user->amount();
+        $membership = $user->membership();
         $createdAt = $user->createdAt()->format(self::DATE_FORMAT);
         $updatedAt = $user->updatedAt()->format(self::DATE_FORMAT);
 
@@ -125,6 +126,21 @@ final class MySQLUserRepository implements UserRepository
       $statement = $this->databaseConnection->prepare($query);
 
       $statement->bindParam('amount', $amount, PDO::PARAM_STR);
+      $statement->bindParam('id', $id, PDO::PARAM_STR);
+
+      $statement->execute();
+    }
+
+    public function changePlan(int $id, string $newPlan){
+      $query = <<<'QUERY'
+      UPDATE users
+      SET membership = :newPlan
+      WHERE id = :id
+      QUERY;
+
+      $statement = $this->databaseConnection->prepare($query);
+
+      $statement->bindParam('newPlan', $newPlan, PDO::PARAM_STR);
       $statement->bindParam('id', $id, PDO::PARAM_STR);
 
       $statement->execute();
