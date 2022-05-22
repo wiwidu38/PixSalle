@@ -116,7 +116,7 @@ final class MySQLUserRepository implements UserRepository
       $statement->execute();
     }
 
-    public function addAmount(int $id, string $amount){
+    public function addAmount(int $id, float $amount){
       $query = <<<'QUERY'
       UPDATE users
       SET amount = amount + :amount

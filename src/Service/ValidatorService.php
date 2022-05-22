@@ -64,4 +64,10 @@ class ValidatorService
       return "The amount recharge can't be inferior or equal to 0€";
     return '';
   }
+
+  public function validateAmountAddAlbum(float $amount){
+    if($amount <= 2.0)
+      return "You cannot add a new album (2€) because balance on your wallet is insufficient, please recharge it";
+    return '';
+  }
 }

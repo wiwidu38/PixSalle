@@ -1,0 +1,20 @@
+{% extends "base.twig" %}
+
+{% block title %}Add photo | PixSalle{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 offset-lg-3">
+  <h1 class="display-3 my-4">Add photo</h1>
+    <div class="d-flex justify-content-center align-items-center flex-column">
+      <p class="lead text-muted">Here you can enter url to add a photo to {{album}}.</p>
+    </div>
+  <form class="row justify-content-center mt-5" action="/portfolio/album/{{idAlbum}}" method="POST">
+    <div class="form-group">
+      <label for="url">URL of your photo</label>
+      <input class="form-control" id="url" name="url" type="text" required>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="m-3 btn btn-primary">Add</button>
+    </div>
+  </form>
+{% endblock %}

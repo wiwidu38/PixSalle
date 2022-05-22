@@ -47,7 +47,13 @@ class PortfolioController
     public function portfolioPage(Request $request, Response $response): Response {
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-        if(strcmp($user->portfolio,'') == 0){
+        if(strcmp($user->membership,'cool') == 0){
+          return $this->twig->render($response, 'membership.twig',
+            [
+              'user' => $user,
+              'info' => 'You have to choose the active plan to access this section'
+            ]);
+        }else if(strcmp($user->portfolio,'') == 0){
           return $this->twig->render($response, 'newPortfolio.twig',
             [
               'user' => $user
@@ -55,20 +61,6 @@ class PortfolioController
         }else{
           $arrayAlbum = $this->photoRepository->getAlbumsByUser(intval($_SESSION['user_id']));
           $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-          // $idAlbum = $this->databaseConnection->lastInsertId();
-          // $ch = curl_init();
-          // $data = array('symbology' => 'QRCode','code' => 'localhost:8030/portfolio/album/'.$idAlbum);
-          // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-          //                 'Accept: image/png',
-          //                 'Content-Type: application/json'
-          //             ));
-          // curl_setopt($ch, CURLOPT_POST, 1);
-          // curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-          // curl_setopt($ch, CURLOPT_URL, 'http://localhost:8020/BarcodeGenerator');
-          // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          // $img = curl_exec($ch);
-          // curl_close($ch);
-          // file_put_contents('/barcodes/'.$idAlbum.'.png', $img);
           return $this->twig->render($response, 'displayPortfolio.twig',
             [
               'user' => $user,
@@ -120,13 +112,27 @@ class PortfolioController
     public function addAlbum(Request $request, Response $response): Response {
       if(array_key_exists('user_id',$_SESSION)){
         $data = $request->getParsedBody();
-        $this->photoRepository->addAlbum($data['name'],intval($_SESSION['user_id']));
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-          return $this->twig->render($response, 'displayPortfolio.twig',
+        $errors = [];
+
+        $error = $this->validator->validateAmountAddAlbum(floatval($user->amount));
+
+        if ($error == '') {
+            unset($error);
+        }
+
+        if (!isset($error)) {
+            $this->photoRepository->addAlbum($data['name'],intval($_SESSION['user_id']));
+            $this->userRepository->addAmount(intval($_SESSION['user_id']), -2.0);
+            return $response->withHeader('Location', '/portfolio')->withStatus(302);
+        }else{
+          return $this->twig->render($response, 'wallet.twig',
             [
               'user' => $user,
-              'info' => 'You new album was successfully created'
+              'info' => $error
             ]);
+        }
+
       }else{
         return $this->twig->render($response, 'sign-in.twig',
           [
@@ -151,6 +157,19 @@ class PortfolioController
             ]);
         }
       }
+
+      public function addPhotoToAlbum(Request $request, Response $response, $args): Response {
+        if(array_key_exists('user_id',$_SESSION)){
+          $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+          $photosAlbum = $this->photoRepository->getPhotosByAlbum(intval($args['id']),10,0);
+          return $response->withHeader('Location', '/portfolio/album/'.$args['id'])->withStatus(302);
+        }else{
+            return $this->twig->render($response, 'sign-in.twig',
+              [
+                'message' => 'You have to be login to access to this page'
+              ]);
+          }
+        }
 
       public function deleteAlbum(Request $request, Response $response, $args): Response {
         if(array_key_exists('user_id',$_SESSION)){
