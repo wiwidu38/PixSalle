@@ -24,7 +24,6 @@ class UserController
     }
 
     public function showWalletPage(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         return $this->twig->render($response, 'wallet.twig',
@@ -41,7 +40,6 @@ class UserController
     }
 
     public function addMoneyWallet(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         $data = $request->getParsedBody();
@@ -84,7 +82,6 @@ class UserController
     }
 
     public function membershipPage(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         return $this->twig->render($response, 'membership.twig',
@@ -100,7 +97,6 @@ class UserController
     }
 
     public function changePlan(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         $data = $request->getParsedBody();

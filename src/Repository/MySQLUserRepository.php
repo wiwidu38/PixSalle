@@ -22,8 +22,8 @@ final class MySQLUserRepository implements UserRepository
     public function createUser(User $user): void
     {
         $query = <<<'QUERY'
-        INSERT INTO users(email, password, createdAt, updatedAt, amount, username, phone, profile_picture, membership)
-        VALUES(:email, :password, :createdAt, :updatedAt, :amount, '', '', '')
+        INSERT INTO users(email, password, createdAt, updatedAt, amount, username, phone, profile_picture, membership, portfolio)
+        VALUES(:email, :password, :createdAt, :updatedAt, :amount, '', '', '', 'cool', '')
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
@@ -141,6 +141,21 @@ final class MySQLUserRepository implements UserRepository
       $statement = $this->databaseConnection->prepare($query);
 
       $statement->bindParam('newPlan', $newPlan, PDO::PARAM_STR);
+      $statement->bindParam('id', $id, PDO::PARAM_STR);
+
+      $statement->execute();
+    }
+
+    public function addPortfolio(int $id, string $portfolio){
+      $query = <<<'QUERY'
+      UPDATE users
+      SET portfolio = :portfolio
+      WHERE id = :id
+      QUERY;
+
+      $statement = $this->databaseConnection->prepare($query);
+
+      $statement->bindParam('portfolio', $portfolio, PDO::PARAM_STR);
       $statement->bindParam('id', $id, PDO::PARAM_STR);
 
       $statement->execute();

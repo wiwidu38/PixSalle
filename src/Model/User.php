@@ -17,6 +17,7 @@ class User
   private string $picture;
   private float $amount;
   private string $membership;
+  private string $portfolio;
   private Datetime $createdAt;
   private Datetime $updatedAt;
 
@@ -31,7 +32,6 @@ class User
     $this->createdAt = $createdAt;
     $this->updatedAt = $updatedAt;
     $this->amount = 30.0;
-    $this->membership = "cool";
   }
 
   public function id()
@@ -82,5 +82,10 @@ class User
   public function membership()
   {
     return $this->membership;
+  }
+
+  public function portfolio()
+  {
+    return $this->portfolio;
   }
 }

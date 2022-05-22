@@ -28,4 +28,11 @@ function addRoutes(App $app): void
     $app->get('/user/membership', UserController::class . ':membershipPage');
     $app->post('/user/membership', UserController::class . ':changePlan');
     $app->get('/explore', PortfolioController::class . ':explorePage');
+    $app->get('/portfolio', PortfolioController::class . ':portfolioPage');
+    $app->post('/portfolio', PortfolioController::class . ':newPortfolio');
+    $app->get('/portfolio/album', PortfolioController::class . ':newAlbumPage');
+    $app->post('/portfolio/album', PortfolioController::class . ':addAlbum');
+    $app->get('/portfolio/album/{id}', PortfolioController::class . ':showAlbumPage');
+    $app->post('/portfolio/album/{id}', PortfolioController::class . ':addPhotoToAlbum');
+    $app->delete('/portfolio/album/{id}', PortfolioController::class . ':deleteAlbum');
 }

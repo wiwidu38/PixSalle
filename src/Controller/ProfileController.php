@@ -24,7 +24,6 @@ class ProfileController
     }
 
     public function showProfilePage(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         return $this->twig->render($response, 'profile.twig',
@@ -41,7 +40,6 @@ class ProfileController
     }
 
     public function updateProfile(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         $data = $request->getParsedBody();
@@ -89,7 +87,6 @@ class ProfileController
     }
 
     public function showUpdatePassPage(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         return $this->twig->render($response, 'changePass.twig',
@@ -105,7 +102,6 @@ class ProfileController
     }
 
     public function updatePassword(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         $data = $request->getParsedBody();

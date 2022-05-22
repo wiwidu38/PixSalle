@@ -10,6 +10,7 @@ use Salle\PixSalle\Controller\UserController;
 use Salle\PixSalle\Controller\PortfolioController;
 use Salle\PixSalle\Controller\ProfileController;
 use Salle\PixSalle\Repository\MySQLUserRepository;
+use Salle\PixSalle\Repository\MySQLPhotoRepository;
 use Salle\PixSalle\Repository\PDOConnectionBuilder;
 use Slim\Views\Twig;
 
@@ -35,6 +36,10 @@ function addDependencies(ContainerInterface $container): void
 
     $container->set('user_repository', function (ContainerInterface $container) {
         return new MySQLUserRepository($container->get('db'));
+    });
+
+    $container->set('photo_repository', function (ContainerInterface $container) {
+        return new MySQLPhotoRepository($container->get('db'));
     });
 
     $container->set(
@@ -75,7 +80,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         PortfolioController::class,
         function (ContainerInterface $c) {
-            return new PortfolioController($c->get('view'), $c->get('user_repository'));
+            return new PortfolioController($c->get('view'), $c->get('user_repository'), $c->get('photo_repository'));
         }
     );
 }

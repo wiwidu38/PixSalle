@@ -15,4 +15,5 @@ interface UserRepository
     public function updatePassword(int $id, string $password);
     public function addAmount(int $id, string $amount);
     public function changePlan(int $id, string $newPlan);
+    public function addPortfolio(int $id, string $portfolio);
 }

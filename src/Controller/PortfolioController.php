@@ -6,6 +6,7 @@ namespace Salle\PixSalle\Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Salle\PixSalle\Repository\UserRepository;
+use Salle\PixSalle\Repository\PhotoRepository;
 use Salle\PixSalle\Service\ValidatorService;
 use Salle\PixSalle\Model\User;
 use Slim\Views\Twig;
@@ -15,19 +16,96 @@ class PortfolioController
 {
     private Twig $twig;
     private UserRepository $userRepository;
+    private PhotoRepository $photoRepository;
     private ValidatorService $validator;
 
-    public function __construct(Twig $twig, UserRepository $userRepository){
+    public function __construct(Twig $twig, UserRepository $userRepository, PhotoRepository $photoRepository){
         $this->twig = $twig;
         $this->userRepository = $userRepository;
+        $this->photoRepository = $photoRepository;
         $this->validator = new ValidatorService();
     }
 
     public function explorePage(Request $request, Response $response): Response {
-      $user = null;
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+        $arrayPhotos = $this->photoRepository->getPhotos(10,0);
         return $this->twig->render($response, 'explore.twig',
+          [
+            'user' => $user,
+            'arrayPhotos' => $arrayPhotos
+          ]);
+      }else{
+        return $this->twig->render($response, 'explore.twig',
+          [
+            'message' => 'You have to be login to access to this page'
+          ]);
+      }
+
+    }
+
+    public function portfolioPage(Request $request, Response $response): Response {
+      if(array_key_exists('user_id',$_SESSION)){
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+        if(strcmp($user->portfolio,'') == 0){
+          return $this->twig->render($response, 'newPortfolio.twig',
+            [
+              'user' => $user
+            ]);
+        }else{
+          $arrayAlbum = $this->photoRepository->getAlbumsByUser(intval($_SESSION['user_id']));
+          $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+          // $idAlbum = $this->databaseConnection->lastInsertId();
+          // $ch = curl_init();
+          // $data = array('symbology' => 'QRCode','code' => 'localhost:8030/portfolio/album/'.$idAlbum);
+          // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+          //                 'Accept: image/png',
+          //                 'Content-Type: application/json'
+          //             ));
+          // curl_setopt($ch, CURLOPT_POST, 1);
+          // curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+          // curl_setopt($ch, CURLOPT_URL, 'http://localhost:8020/BarcodeGenerator');
+          // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          // $img = curl_exec($ch);
+          // curl_close($ch);
+          // file_put_contents('/barcodes/'.$idAlbum.'.png', $img);
+          return $this->twig->render($response, 'displayPortfolio.twig',
+            [
+              'user' => $user,
+              'arrayAlbum' => $arrayAlbum
+            ]);
+        }
+
+      }else{
+        return $this->twig->render($response, 'sign-in.twig',
+          [
+            'message' => 'You have to be login to access to this page'
+          ]);
+      }
+    }
+
+    public function newPortfolio(Request $request, Response $response): Response {
+      if(array_key_exists('user_id',$_SESSION)){
+        $data = $request->getParsedBody();
+        $this->userRepository->addPortfolio(intval($_SESSION['user_id']),$data['name']);
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+          return $this->twig->render($response, 'displayPortfolio.twig',
+            [
+              'user' => $user,
+              'message' => 'You have succcessfully created your porfolio now you can add album'
+            ]);
+      }else{
+        return $this->twig->render($response, 'sign-in.twig',
+          [
+            'message' => 'You have to be login to access to this page'
+          ]);
+      }
+    }
+
+    public function newAlbumPage(Request $request, Response $response): Response {
+      if(array_key_exists('user_id',$_SESSION)){
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+        return $this->twig->render($response, 'newAlbum.twig',
           [
             'user' => $user
           ]);
@@ -37,44 +115,18 @@ class PortfolioController
             'message' => 'You have to be login to access to this page'
           ]);
       }
-
     }
 
-    public function addMoneyWallet(Request $request, Response $response): Response {
-      $user = null;
+    public function addAlbum(Request $request, Response $response): Response {
       if(array_key_exists('user_id',$_SESSION)){
-        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
         $data = $request->getParsedBody();
-        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-
-        $errors = [];
-
-        $errors['amount'] = $this->validator->validateAmount(floatval($data['amount']));
-
-        if ($errors['amount'] == '') {
-            unset($errors['amount']);
-        }
-
-        if (count($errors) == 0) {
-            $this->userRepository->addAmount(intval($_SESSION['user_id']),$data['amount']);
-            $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-            return $this->twig->render(
-                $response,
-                'wallet.twig',
-                [
-                    'info' => 'Amount is successfully added to your wallet',
-                    'user' => $user
-                ]
-            );
-        }
-        return $this->twig->render(
-            $response,
-            'wallet.twig',
+        $this->photoRepository->addAlbum($data['name'],intval($_SESSION['user_id']));
+        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
+          return $this->twig->render($response, 'displayPortfolio.twig',
             [
-                'formErrors' => $errors,
-                'user' => $user
-            ]
-        );
+              'user' => $user,
+              'info' => 'You new album was successfully created'
+            ]);
       }else{
         return $this->twig->render($response, 'sign-in.twig',
           [
@@ -83,47 +135,32 @@ class PortfolioController
       }
     }
 
-    public function membershipPage(Request $request, Response $response): Response {
-      $user = null;
+    public function showAlbumPage(Request $request, Response $response, $args): Response {
       if(array_key_exists('user_id',$_SESSION)){
         $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-        return $this->twig->render($response, 'membership.twig',
-          [
-            'user' => $user
-          ]);
+        $photosAlbum = $this->photoRepository->getPhotosByAlbum(intval($args['id']),10,0);
+            return $this->twig->render($response, 'displayAlbum.twig',
+              [
+                'user' => $user,
+                'photosAlbum' => $photosAlbum
+              ]);
       }else{
-        return $this->twig->render($response, 'sign-in.twig',
-          [
-            'message' => 'You have to be login to access to this page'
-          ]);
-      }
-    }
-
-    public function changePlan(Request $request, Response $response): Response {
-      $user = null;
-      if(array_key_exists('user_id',$_SESSION)){
-        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-        $data = $request->getParsedBody();
-        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $newPlan = '';
-        if(isset($data['cool']))
-          $newPlan = 'cool';
-        else $newPlan = 'active';
-        $this->userRepository->changePlan(intval($_SESSION['user_id']),$newPlan);
-        $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-        return $this->twig->render(
-            $response,
-            'membership.twig',
+          return $this->twig->render($response, 'sign-in.twig',
             [
-                'info' => 'Your plan has been updated',
-                'user' => $user
-            ]
-        );
-      }else{
-        return $this->twig->render($response, 'sign-in.twig',
-          [
-            'message' => 'You have to be login to access to this page'
-          ]);
+              'message' => 'You have to be login to access to this page'
+            ]);
+        }
       }
-    }
+
+      public function deleteAlbum(Request $request, Response $response, $args): Response {
+        if(array_key_exists('user_id',$_SESSION)){
+          $this->photoRepository->deleteAlbum(intval($args['id']));
+          return $response->withHeader('Location', '/portfolio')->withStatus(302);
+        }else{
+            return $this->twig->render($response, 'sign-in.twig',
+              [
+                'message' => 'You have to be login to access to this page'
+              ]);
+          }
+        }
 }
