@@ -7,6 +7,7 @@ use Salle\PixSalle\Controller\SignUpController;
 use Salle\PixSalle\Controller\UserSessionController;
 use Salle\PixSalle\Controller\HomeController;
 use Salle\PixSalle\Controller\UserController;
+use Salle\PixSalle\Controller\PortfolioController;
 use Salle\PixSalle\Controller\ProfileController;
 use Salle\PixSalle\Repository\MySQLUserRepository;
 use Salle\PixSalle\Repository\PDOConnectionBuilder;
@@ -68,6 +69,13 @@ function addDependencies(ContainerInterface $container): void
         UserController::class,
         function (ContainerInterface $c) {
             return new UserController($c->get('view'), $c->get('user_repository'));
+        }
+    );
+
+    $container->set(
+        PortfolioController::class,
+        function (ContainerInterface $c) {
+            return new PortfolioController($c->get('view'), $c->get('user_repository'));
         }
     );
 }

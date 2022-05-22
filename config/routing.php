@@ -6,6 +6,7 @@ use Salle\PixSalle\Controller\API\BlogAPIController;
 use Salle\PixSalle\Controller\HomeController;
 use Salle\PixSalle\Controller\UserController;
 use Salle\PixSalle\Controller\ProfileController;
+use Salle\PixSalle\Controller\PortfolioController;
 use Salle\PixSalle\Controller\SignUpController;
 use Salle\PixSalle\Controller\UserSessionController;
 use Slim\App;
@@ -26,4 +27,5 @@ function addRoutes(App $app): void
     $app->post('/user/wallet', UserController::class . ':addMoneyWallet');
     $app->get('/user/membership', UserController::class . ':membershipPage');
     $app->post('/user/membership', UserController::class . ':changePlan');
+    $app->get('/explore', PortfolioController::class . ':explorePage');
 }
