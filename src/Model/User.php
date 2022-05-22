@@ -32,6 +32,7 @@ class User
     $this->createdAt = $createdAt;
     $this->updatedAt = $updatedAt;
     $this->amount = 30.0;
+    $this->membership = "cool";
   }
 
   public function id()

@@ -12,6 +12,12 @@
           <p class="lead">Album is empty.</p>
       {% endif %}
     </div>
+    <form class="col-lg-4 d-flex flex-row align-items-center" action="/portfolio/album/{{idAlbum}}" method="post">
+      <div class="form-group">
+        <input class="form-control" name="url" type="text" placeholder="Url for new photo" required>
+      </div>
+        <button type="submit" class="m-3 btn btn-primary">ADD</button>
+    </form>
   </div>
   <div class="album py-5 bg-light">
     <div class="container">

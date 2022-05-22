@@ -9,6 +9,7 @@ use Salle\PixSalle\Repository\UserRepository;
 use Salle\PixSalle\Repository\PhotoRepository;
 use Salle\PixSalle\Service\ValidatorService;
 use Salle\PixSalle\Model\User;
+use Salle\PixSalle\Model\Photo;
 use Slim\Views\Twig;
 use Slim\Routing\RouteContext;
 
@@ -148,7 +149,8 @@ class PortfolioController
             return $this->twig->render($response, 'displayAlbum.twig',
               [
                 'user' => $user,
-                'photosAlbum' => $photosAlbum
+                'photosAlbum' => $photosAlbum,
+                'idAlbum' => $args['id']
               ]);
       }else{
           return $this->twig->render($response, 'sign-in.twig',
@@ -160,8 +162,10 @@ class PortfolioController
 
       public function addPhotoToAlbum(Request $request, Response $response, $args): Response {
         if(array_key_exists('user_id',$_SESSION)){
+          $data = $request->getParsedBody();
           $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-          $photosAlbum = $this->photoRepository->getPhotosByAlbum(intval($args['id']),10,0);
+          $photo = new Photo($data['url'],intval($args['id']));
+          $this->photoRepository->addPhoto($photo);
           return $response->withHeader('Location', '/portfolio/album/'.$args['id'])->withStatus(302);
         }else{
             return $this->twig->render($response, 'sign-in.twig',

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Salle\PixSalle\Model;
 
-class User
+class Photo
 {
 
   private int $id;
@@ -13,8 +13,8 @@ class User
   private Datetime $publishDate;
 
   public function __construct(
-    private string $url,
-    private int $idAlbum
+    string $url,
+    int $idAlbum
   ) {
     $this->url = $url;
     $this->idAlbum = $idAlbum;

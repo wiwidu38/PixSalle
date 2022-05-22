@@ -54,7 +54,7 @@ class UserController
         }
 
         if (count($errors) == 0) {
-            $this->userRepository->addAmount(intval($_SESSION['user_id']),$data['amount']);
+            $this->userRepository->addAmount(intval($_SESSION['user_id']),floatval($data['amount']));
             $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
             return $this->twig->render(
                 $response,

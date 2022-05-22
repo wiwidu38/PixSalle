@@ -19,14 +19,17 @@ final class MySQLPhotoRepository implements PhotoRepository
 
     public function addPhoto(Photo $photo): void {
           $query = <<<'QUERY'
-          INSERT INTO photo(url, idAlbum, nameAlbum, usernameUser)
-          VALUES(:url, :idAlbum, SELECT name FROM album WHERE id = :idAlbum, SELECT username FROM users WHERE id = (SELECT idUser FROM album WHERE id = :idAlbum))
+          INSERT INTO photo(url, publishDate, idAlbum, nameAlbum, usernameUser)
+          VALUES(:url, (SELECT NOW()), :idAlbum, (SELECT name FROM album WHERE id = :idAlbum), (SELECT username FROM users WHERE id = (SELECT idUser FROM album WHERE id = :idAlbum)))
           QUERY;
 
           $statement = $this->databaseConnection->prepare($query);
 
-          $statement->bindParam('url', $photo->url(), PDO::PARAM_STR);
-          $statement->bindParam('idAlbum', $photo->idAlbum(), PDO::PARAM_STR);
+          $url = $photo->url();
+          $idAlbum = $photo->idAlbum();
+
+          $statement->bindParam('url', $url, PDO::PARAM_STR);
+          $statement->bindParam('idAlbum', $idAlbum, PDO::PARAM_STR);
 
           $statement->execute();
     }
